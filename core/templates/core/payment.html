@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Gateway</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        .box { border: 1px solid #ccc; padding: 20px; width: 380px; border-radius: 8px; }
+        input { width: 95%; padding: 8px; margin-bottom: 10px; }
+        .btn { background: green; color: white; padding: 10px; width: 100%; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Payment Checkout</h2>
+    <p><strong>Room:</strong> {{ booking.room.room_type }} ({{ booking.room.hotel.name }})</p>
+    <p><strong>Dates:</strong> {{ booking.check_in }} to {{ booking.check_out }}</p>
+    <p><strong>Total Price:</strong> ${{ booking.total_price }}</p>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Cardholder Name:</label>
+        <input type="text" placeholder="John Doe" required>
+        <label>Card Number:</label>
+        <input type="text" placeholder="1234 5678 9101 1121" required>
+        <button type="submit" class="btn">Pay ${{ booking.total_price }} Now</button>
+    </form>
+</div>
+
+</body>
+</html>

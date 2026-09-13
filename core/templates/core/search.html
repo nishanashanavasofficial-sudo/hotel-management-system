@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrandStay | Luxury Hotels & Resorts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --accent: #ff6b6b;
+            --success: #2ec4b6;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+
+        body { background-color: #f0f2f5; color: var(--dark); padding-bottom: 50px; }
+
+        /* Navigation Bar */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand { color: white; font-size: 1.5rem; font-weight: 700; text-decoration: none; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-weight: 500; transition: opacity 0.3s; }
+        .nav-links a:hover { opacity: 0.8; }
+
+        /* Hero / Filter Section */
+        .search-container {
+            background: white;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+        }
+
+        .filter-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+
+        .filter-form input, .filter-form select, .filter-form button {
+            padding: 12px 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .btn-search { background: var(--primary); color: white; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-search:hover { background: var(--secondary); transform: translateY(-2px); }
+
+        /* Hotel Grid */
+        .hotel-grid { max-width: 1100px; margin: 0 auto; display: grid; gap: 25px; }
+
+        .hotel-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .hotel-card:hover { transform: translateY(-5px); box-shadow: 0 12px 28px rgba(0,0,0,0.12); }
+
+        .hotel-image {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .hotel-details { padding: 25px; }
+        .hotel-title { font-size: 1.4rem; color: var(--primary); margin-bottom: 8px; }
+        .hotel-location { font-size: 0.9rem; color: #6c757d; margin-bottom: 15px; }
+
+        /* Room Badges & Buttons */
+        .room-list { margin: 15px 0; }
+        .room-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .btn-book {
+            background: var(--success);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-book:hover { opacity: 0.9; }
+
+        .btn-review {
+            display: inline-block;
+            margin-top: 10px;
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Hover Popup Modal */
+        .popup-info {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .hotel-card:hover .popup-info { display: block; animation: fadeIn 0.3s forwards; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="{% url 'hotel_search' %}" class="navbar-brand">🏨 GrandStay</a>
+    <div class="nav-links">
+        <a href="{% url 'hotel_search' %}">Home</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'my_bookings' %}">My Bookings</a>
+            <a href="#">Hello, {{ user.username }}</a>
+            <a href="/admin/logout/">Logout</a>
+        {% else %}
+            <a href="{% url 'register' %}" style="background: var(--accent); padding: 6px 14px; border-radius: 6px;">Sign Up</a>
+            <a href="/admin/login/?next={{ request.path }}">Login</a>
+        {% endif %}
+
+        {% if user.is_staff %}
+            <a href="/admin/" style="background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 4px;">Admin Portal</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="search-container">
+   <form class="filter-form" method="GET">
+    <!-- City / Location Dropdown -->
+    <select name="location">
+        <option value="">📍 City / Location (All)</option>
+        <option value="Kochi" {% if selected_location == 'Kochi' %}selected{% endif %}>Kochi</option>
+        <option value="Munnar" {% if selected_location == 'Munnar' %}selected{% endif %}>Munnar</option>
+        <option value="Trivandrum" {% if selected_location == 'Trivandrum' %}selected{% endif %}>Trivandrum</option>
+        <option value="Alleppey" {% if selected_location == 'Alleppey' %}selected{% endif %}>Alleppey</option>
+        <option value="Calicut" {% if selected_location == 'Calicut' %}selected{% endif %}>Calicut</option>
+    </select>
+
+    <!-- Room Type Dropdown -->
+    <select name="room_type">
+        <option value="">🛌 Room Type (All)</option>
+        <option value="Single Room" {% if selected_room_type == 'Single Room' %}selected{% endif %}>Single Room</option>
+        <option value="Double Room" {% if selected_room_type == 'Double Room' %}selected{% endif %}>Double Room</option>
+        <option value="Deluxe Room" {% if selected_room_type == 'Deluxe Room' %}selected{% endif %}>Deluxe Room</option>
+        <option value="Executive Suite" {% if selected_room_type == 'Executive Suite' %}selected{% endif %}>Executive Suite</option>
+        <option value="Honeymoon Room" {% if selected_room_type == 'Honeymoon Room' %}selected{% endif %}>Honeymoon Room</option>
+    </select>
+
+    <input type="number" name="max_price" placeholder="💵 Max Price ($)" value="{{ selected_price }}">
+    <input type="text" name="facility" placeholder="📊 Facility (WiFi, Pool)" value="{{ selected_facility }}">
+    <button type="submit" class="btn-search">Search Hotels</button>
+</form>
+</div>
+
+<div class="hotel-grid">
+    {% for hotel in hotels %}
+    <div class="hotel-card">
+        {% if hotel.image %}
+    <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}" style="width: 260px; height: 100%; object-fit: cover; border-top-left-radius: 12px; border-bottom-left-radius: 12px;">
+{% else %}
+    <div class="hotel-image" style="width: 260px; min-height: 200px; border-top-left-radius: 12px; border-bottom-left-radius: 12px;">
+        {{ hotel.name|slice:":2"|upper }}
+    </div>
+{% endif %}
+        <div class="hotel-details">
+            <h2 class="hotel-title">{{ hotel.name }}</h2>
+            <p class="hotel-location">📍 {{ hotel.location }} | <span>Amenities: {{ hotel.amenities }}</span></p>
+            <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">{{ hotel.description }}</p>
+
+            <div class="room-list">
+                <h4 style="font-size: 0.95rem; margin-bottom: 8px;">Available Rooms:</h4>
+                {% for room in hotel.rooms.all %}
+                    {% if room.is_available %}
+                    <div class="room-item">
+                        <div>
+                            <strong>{{ room.room_type }}</strong> 
+                            <span style="color: #666; font-size: 0.85rem;">— ${{ room.price_per_night }} / night</span>
+                        </div>
+                        <a href="{% url 'book_room' room.id %}" class="btn-book">Book Now</a>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                    <p style="font-size: 0.85rem; color: #888;">No active room listings for this property.</p>
+                {% endfor %}
+            </div>
+
+            <a href="{% url 'add_review' hotel.id %}" class="btn-review">⭐ Add Guest Review</a>
+        </div>
+
+        <div class="popup-info">
+            ✨ Click <strong>Book Now</strong> to lock in your luxury reservation!
+        </div>
+    </div>
+    {% empty %}
+    <p style="text-align: center; font-size: 1.1rem; color: #666;">No luxury accommodations matched your criteria.</p>
+    {% endfor %}
+</div>
+
+</body>
+</html>

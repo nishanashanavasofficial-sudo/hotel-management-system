@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Review - {{ hotel.name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        .box { border: 1px solid #ccc; padding: 20px; width: 400px; border-radius: 8px; }
+        select, textarea { width: 95%; padding: 8px; margin-bottom: 10px; }
+        .btn { background: #17a2b8; color: white; padding: 10px; border: none; width: 100%; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Leave Feedback for {{ hotel.name }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Rating (1 to 5 Stars):</label>
+        <select name="rating">
+            <option value="5">5 - Excellent</option>
+            <option value="4">4 - Good</option>
+            <option value="3">3 - Average</option>
+            <option value="2">2 - Poor</option>
+            <option value="1">1 - Terrible</option>
+        </select>
+        
+        <label>Your Review:</label>
+        <textarea name="comment" rows="4" required></textarea>
+        
+        <button type="submit" class="btn">Submit Review</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Room</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        .form-container { background: white; padding: 20px; max-width: 400px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input, button { width: 100%; padding: 10px; margin-top: 10px; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Book {{ room.hotel.name }} ({{ room.room_type }})</h2>
+        <p><strong>Price:</strong> ${{ room.price_per_night }} / night</p>
+        <form method="POST">
+            {% csrf_token %}
+            <label>Check-in Date:</label>
+            <input type="date" name="check_in" required>
+            <label>Check-out Date:</label>
+            <input type="date" name="check_out" required>
+            <button type="submit">Confirm & Pay</button>
+        </form>
+    </div>
+</body>
+</html>
