@@ -1,0 +1,6 @@
+zuike comments
+
+When logging in as an admin, the user is automatically redirected to the default Django Admin Panel.
+improve ui. 
+
+before pushing changes to git run "git pull" command.
